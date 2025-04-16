@@ -86,9 +86,9 @@
     "sql.js": "latest",
     "sqlite3": "latest",
     "class-validator": "latest",
+    "drizzle-orm": "latest",
     "bcryptjs": "latest",
-    "jsonwebtoken": "latest",
-    "drizzle-orm": "latest"
+    "jsonwebtoken": "latest"
   },
   "devDependencies": {
     "@types/node": "^22",
