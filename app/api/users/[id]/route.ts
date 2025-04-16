@@ -2,6 +2,9 @@ import { type NextRequest, NextResponse } from "next/server"
 import { getCurrentUser } from "@/lib/auth"
 import * as userService from "@/lib/services/user-service"
 
+// Ajouter cette ligne pour le mode d'exportation statique
+export const dynamic = "force-static"
+
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const currentUser = await getCurrentUser()

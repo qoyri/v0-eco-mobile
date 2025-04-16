@@ -2,6 +2,9 @@ import { type NextRequest, NextResponse } from "next/server"
 import { getCurrentUser } from "@/lib/auth"
 import * as agencyService from "@/lib/services/agency-service"
 
+// Ajouter cette ligne pour le mode d'exportation statique
+export const dynamic = "force-static"
+
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const id = params.id

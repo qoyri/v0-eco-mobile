@@ -2,6 +2,9 @@ import { type NextRequest, NextResponse } from "next/server"
 import { executeRawQuery } from "@/lib/db"
 import { getCurrentUser } from "@/lib/auth"
 
+// Ajouter cette ligne pour le mode d'exportation statique
+export const dynamic = "force-static"
+
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const user = await getCurrentUser()
