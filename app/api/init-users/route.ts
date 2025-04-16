@@ -2,6 +2,9 @@ import { type NextRequest, NextResponse } from "next/server"
 import { executeRawQuery } from "@/lib/db"
 import { hashPassword } from "@/lib/auth"
 
+// Ajouter cette ligne pour le mode d'exportation statique
+export const dynamic = "force-static"
+
 export async function POST(request: NextRequest) {
   try {
     // Vérifier si des utilisateurs existent déjà

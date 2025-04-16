@@ -3,6 +3,9 @@ import { cookies } from "next/headers"
 import { executeRawQuery } from "@/lib/db"
 import { createToken, verifyPassword } from "@/lib/auth"
 
+// Ajouter cette ligne pour le mode d'exportation statique
+export const dynamic = "force-static"
+
 export async function POST(request: NextRequest) {
   try {
     const { email, password, reservationNumber } = await request.json()

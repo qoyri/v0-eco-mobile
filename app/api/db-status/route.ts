@@ -1,6 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { executeRawQuery } from "@/lib/db"
 
+// Ajouter cette ligne pour le mode d'exportation statique
+export const dynamic = "force-static"
+
 // Fonction utilitaire pour vérifier si une table existe
 async function tableExists(tableName: string): Promise<boolean> {
   const result = await executeRawQuery(

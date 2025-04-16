@@ -3,6 +3,9 @@ import { executeRawQuery } from "@/lib/db"
 import { generateReservationNumber } from "@/lib/db"
 import { getCurrentUser } from "@/lib/auth"
 
+// Ajouter cette ligne pour le mode d'exportation statique
+export const dynamic = "force-static"
+
 export async function GET(request: NextRequest) {
   try {
     const user = await getCurrentUser()
@@ -31,7 +34,7 @@ export async function GET(request: NextRequest) {
 
     if (status) {
       params.push(status)
-      query += ` AND r.status = $${params.length}`
+      query += ` AND r.status = ${params.length}`
     }
 
     query += ` ORDER BY r.start_date DESC`

@@ -2,6 +2,9 @@ import { type NextRequest, NextResponse } from "next/server"
 import { getCurrentUser } from "@/lib/auth"
 import { executeRawQuery } from "@/lib/db"
 
+// Ajouter cette ligne pour le mode d'exportation statique
+export const dynamic = "force-static"
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -37,12 +40,12 @@ export async function GET(request: NextRequest) {
     // Si nous avons un nom d'agence, rechercher par nom ou ville
     if (agencyName) {
       params.push(agencyName.toLowerCase())
-      query += ` AND (LOWER(a.name) LIKE '%' || $${params.length} || '%' OR LOWER(a.city) = $${params.length})`
+      query += ` AND (LOWER(a.name) LIKE '%' || ${params.length} || '%' OR LOWER(a.city) = ${params.length})`
     }
     // Sinon, si nous avons un ID d'agence, rechercher par ID
     else if (agencyId) {
       params.push(agencyId)
-      query += ` AND v.agency_id = $${params.length}`
+      query += ` AND v.agency_id = ${params.length}`
     }
 
     if (type) {
@@ -57,7 +60,7 @@ export async function GET(request: NextRequest) {
       }
 
       params.push(dbType)
-      query += ` AND v.type = $${params.length}`
+      query += ` AND v.type = ${params.length}`
     }
 
     query += ` ORDER BY v.hourly_rate ASC`
