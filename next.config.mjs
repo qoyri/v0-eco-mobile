@@ -17,6 +17,19 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  // Exclure les routes API de l'exportation statique
+  exportPathMap: async function() {
+    return {
+      '/': { page: '/' },
+      '/dashboard': { page: '/dashboard' },
+      '/agencies': { page: '/agencies' },
+      '/support': { page: '/support' },
+      '/register': { page: '/register' },
+      '/new-reservation': { page: '/new-reservation' },
+      '/admin': { page: '/admin' },
+      '/admin/dashboard': { page: '/admin/dashboard' },
+    };
+  },
 }
 
 export default nextConfig

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { AlertTriangle, ArrowLeft, Bike, Calendar, Clock, CreditCard, MapPin, QrCode, CalendarIcon } from "lucide-react"
+import { AlertTriangle, ArrowLeft, Bike, Calendar, Clock, CreditCard, MapPin, QrCode } from "lucide-react"
 import { AppLayout } from "./app-layout"
 import {
   Dialog,
@@ -21,14 +21,31 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
-import { useReservations } from "@/hooks/use-reservations"
 import { formatDate, formatTime } from "@/lib/utils/date-utils"
 import { Loader2 } from "lucide-react"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Calendar as CalendarComponent } from "@/components/ui/calendar"
-import { format } from "date-fns"
-import { fr } from "date-fns/locale"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+
+// Données fictives pour le mode statique
+const MOCK_RESERVATION = {
+  id: "reservation-1",
+  reservation_number: "ECO-12345",
+  user_id: "user-1",
+  vehicle_id: "vehicle-1",
+  agency_id: "agency-1",
+  start_date: new Date().toISOString(),
+  end_date: new Date(Date.now() + 3600000).toISOString(),
+  duration: 1,
+  status: "CONFIRMED",
+  total_amount: 15,
+  payment_status: "PAID",
+  vehicle_type: "BIKE",
+  vehicle_model: "City Explorer",
+  vehicle_autonomy: 80,
+  agency_name: "Eco Mobile Annecy Centre",
+  agency_city: "Annecy",
+  agency_address: "15 rue de la République, 74000 Annecy",
+  agency_zip_code: "74000",
+  agency_phone: "04 50 XX XX XX",
+}
 
 interface ReservationDetailsScreenProps {
   id?: string
@@ -37,23 +54,22 @@ interface ReservationDetailsScreenProps {
 export function ReservationDetailsScreen({ id }: ReservationDetailsScreenProps) {
   const router = useRouter()
   const { toast } = useToast()
-  const { reservationDetails, fetchReservationDetails, updateReservation, editReservation, reportIncident, loading } =
-    useReservations()
+  const [reservationDetails, setReservationDetails] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
   const [showCancelDialog, setShowCancelDialog] = useState(false)
   const [incidentType, setIncidentType] = useState("panne")
   const [incidentDescription, setIncidentDescription] = useState("")
   const [reportLoading, setReportLoading] = useState(false)
-  const [showEditDialog, setShowEditDialog] = useState(false)
-  const [editData, setEditData] = useState({
-    date: new Date(),
-    duration: 0,
-  })
 
   useEffect(() => {
-    if (id) {
-      fetchReservationDetails(id)
-    }
-  }, [id, fetchReservationDetails])
+    // Simuler un chargement
+    const timer = setTimeout(() => {
+      setReservationDetails(MOCK_RESERVATION)
+      setLoading(false)
+    }, 1000)
+
+    return () => clearTimeout(timer)
+  }, [id])
 
   const handleBack = () => {
     router.back()
@@ -63,7 +79,7 @@ export function ReservationDetailsScreen({ id }: ReservationDetailsScreenProps) 
     if (!reservationDetails) return
 
     try {
-      await updateReservation(reservationDetails.id, "cancel")
+      // Simuler une annulation
       setShowCancelDialog(false)
       toast({
         title: "Réservation annulée",
@@ -85,11 +101,8 @@ export function ReservationDetailsScreen({ id }: ReservationDetailsScreenProps) 
 
     setReportLoading(true)
     try {
-      await reportIncident({
-        reservationId: reservationDetails.id,
-        type: incidentType.toUpperCase(),
-        description: incidentDescription,
-      })
+      // Simuler un signalement d'incident
+      await new Promise((resolve) => setTimeout(resolve, 1000))
 
       toast({
         title: "Incident signalé",
@@ -109,39 +122,6 @@ export function ReservationDetailsScreen({ id }: ReservationDetailsScreenProps) 
       setReportLoading(false)
     }
   }
-
-  const handleEditReservation = async () => {
-    if (!reservationDetails) return
-
-    try {
-      await editReservation(reservationDetails.id, {
-        startDate: editData.date,
-        duration: editData.duration,
-      })
-
-      setShowEditDialog(false)
-
-      // Recharger les détails de la réservation
-      await fetchReservationDetails(reservationDetails.id)
-    } catch (error) {
-      console.error("Erreur lors de la modification:", error)
-      toast({
-        title: "Erreur",
-        description: "Une erreur est survenue lors de la modification de la réservation",
-        variant: "destructive",
-      })
-    }
-  }
-
-  // Initialiser les données d'édition lorsque les détails de réservation sont chargés
-  useEffect(() => {
-    if (reservationDetails) {
-      setEditData({
-        date: new Date(reservationDetails.start_date),
-        duration: reservationDetails.duration,
-      })
-    }
-  }, [reservationDetails])
 
   if (loading) {
     return (
@@ -412,66 +392,10 @@ export function ReservationDetailsScreen({ id }: ReservationDetailsScreenProps) 
               </DialogFooter>
             </DialogContent>
           </Dialog>
-          <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-            <DialogTrigger asChild>
-              <Button variant="outline" className="w-full" disabled={!canCancel}>
-                Modifier la réservation
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Modifier la réservation</DialogTitle>
-                <DialogDescription>Vous pouvez modifier la date et la durée de votre réservation.</DialogDescription>
-              </DialogHeader>
-              <div className="py-4 space-y-4">
-                <div className="space-y-2">
-                  <Label>Date de réservation</Label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button variant="outline" className="w-full justify-start text-left font-normal">
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {editData.date ? format(editData.date, "PPP", { locale: fr }) : "Sélectionnez une date"}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <CalendarComponent
-                        mode="single"
-                        selected={editData.date}
-                        onSelect={(date) => date && setEditData({ ...editData, date })}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="duration">Durée de location</Label>
-                  <Select
-                    value={editData.duration.toString()}
-                    onValueChange={(value) => setEditData({ ...editData, duration: Number.parseInt(value) })}
-                  >
-                    <SelectTrigger id="duration">
-                      <SelectValue placeholder="Sélectionnez une durée" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">1 heure</SelectItem>
-                      <SelectItem value="2">2 heures</SelectItem>
-                      <SelectItem value="4">4 heures</SelectItem>
-                      <SelectItem value="8">8 heures (journée)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setShowEditDialog(false)}>
-                  Annuler
-                </Button>
-                <Button onClick={handleEditReservation}>Confirmer les modifications</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
         </div>
       </div>
     </AppLayout>
   )
 }
+
+export default ReservationDetailsScreen
