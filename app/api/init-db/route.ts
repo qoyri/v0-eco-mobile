@@ -1,8 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { executeRawQuery } from "@/lib/db"
 
-// Ajouter cette ligne pour le mode d'exportation statique
-export const dynamic = "force-static"
+// Changer de force-static à force-dynamic
+export const dynamic = "force-dynamic"
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     try {
       // Créer les types enum
       await executeRawQuery(`
-        DO $ 
+        DO $$ 
         BEGIN
           IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'role') THEN
             CREATE TYPE role AS ENUM ('CLIENT', 'ADMIN', 'MANAGER');
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
           IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'incident_status') THEN
             CREATE TYPE incident_status AS ENUM ('REPORTED', 'IN_PROGRESS', 'RESOLVED');
           END IF;
-        END $;
+        END $$;
       `)
 
       // Créer la table users

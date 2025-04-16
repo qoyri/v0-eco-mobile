@@ -2,8 +2,8 @@ import { type NextRequest, NextResponse } from "next/server"
 import { executeRawQuery } from "@/lib/db"
 import { getCurrentUser } from "@/lib/auth"
 
-// Ajouter cette ligne pour le mode d'exportation statique
-export const dynamic = "force-static"
+// Changer de force-static à force-dynamic
+export const dynamic = "force-dynamic"
 
 // Ajouter cette fonction pour générer les paramètres statiques
 export async function generateStaticParams() {
@@ -11,7 +11,7 @@ export async function generateStaticParams() {
   return [{ id: "reservation-1" }, { id: "reservation-2" }, { id: "reservation-3" }]
 }
 
-export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const user = await getCurrentUser()
 
@@ -19,8 +19,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: "Non authentifié" }, { status: 401 })
     }
 
-    // Attendre la résolution de params pour accéder à id
-    const { id } = await params
+    const id = params.id
     const { startDate, duration } = await request.json()
 
     // Récupérer la réservation

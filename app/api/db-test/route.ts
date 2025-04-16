@@ -1,8 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { testConnection } from "@/lib/neon-db"
 
-// Ajouter cette ligne pour le mode d'exportation statique
-export const dynamic = "force-static"
+// Changer de force-static à force-dynamic
+export const dynamic = "force-dynamic"
 
 export async function GET(request: NextRequest) {
   try {

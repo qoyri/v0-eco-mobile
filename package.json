@@ -85,10 +85,13 @@
     "postgres": "latest",
     "sql.js": "latest",
     "sqlite3": "latest",
+    "@auth/core": "latest",
+    "nodemailer": "latest",
     "class-validator": "latest",
     "drizzle-orm": "latest",
     "bcryptjs": "latest",
-    "jsonwebtoken": "latest"
+    "jsonwebtoken": "latest",
+    "next-auth": "latest"
   },
   "devDependencies": {
     "@types/node": "^22",

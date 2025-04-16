@@ -2,8 +2,8 @@ import { type NextRequest, NextResponse } from "next/server"
 import { getCurrentUser } from "@/lib/auth"
 import * as agencyService from "@/lib/services/agency-service"
 
-// Ajouter cette ligne pour le mode d'exportation statique
-export const dynamic = "force-static"
+// Changer de force-static à force-dynamic
+export const dynamic = "force-dynamic"
 
 // Ajouter cette fonction pour générer les paramètres statiques
 export async function generateStaticParams() {

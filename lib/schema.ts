@@ -1,4 +1,5 @@
 import { pgTable, uuid, varchar, text, timestamp, boolean, integer, decimal, pgEnum } from "drizzle-orm/pg-core"
+import { relations } from "drizzle-orm"
 
 // Énumérations
 export const roleEnum = pgEnum("role", ["CLIENT", "ADMIN", "MANAGER"])
@@ -87,15 +88,31 @@ export const reservations = pgTable("reservations", {
 
 // Table incidents
 export const incidents = pgTable("incidents", {
-  id: uuid("id").primaryKey().defaultRandom(),
+  id: uuid("id").defaultRandom().primaryKey(),
   reservationId: uuid("reservation_id")
     .notNull()
     .references(() => reservations.id),
-  type: incidentTypeEnum("type").notNull(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id),
+  type: text("type").notNull(),
   description: text("description").notNull(),
-  reportedAt: timestamp("reported_at").defaultNow().notNull(),
-  status: incidentStatusEnum("status").notNull().default("REPORTED"),
+  status: text("status").notNull().default("REPORTED"),
+  reportedAt: timestamp("reported_at").notNull().defaultNow(),
   resolvedAt: timestamp("resolved_at"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  response: text("response"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 })
+
+// Définissons les relations
+export const incidentsRelations = relations(incidents, ({ one }) => ({
+  reservation: one(reservations, {
+    fields: [incidents.reservationId],
+    references: [reservations.id],
+  }),
+  user: one(users, {
+    fields: [incidents.userId],
+    references: [users.id],
+  }),
+}))

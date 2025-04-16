@@ -1,59 +1,47 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { executeRawQuery } from "@/lib/db"
-import { getCurrentUser } from "@/lib/auth"
+import { getAllIncidents, createIncident } from "@/lib/services/incident-service"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth-options"
 
-// Ajouter cette ligne pour le mode d'exportation statique
-export const dynamic = "force-static"
+export async function GET(request: NextRequest) {
+  try {
+    console.log("GET /api/incidents - Début de la requête")
+
+    // Pour le débogage, récupérons tous les incidents sans vérifier l'authentification
+    const incidents = await getAllIncidents()
+    console.log("GET /api/incidents - Incidents récupérés:", incidents?.length || 0)
+
+    return NextResponse.json(incidents)
+  } catch (error) {
+    console.error("GET /api/incidents - Erreur:", error)
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 })
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const user = await getCurrentUser()
+    const session = await getServerSession(authOptions)
 
-    if (!user) {
-      return NextResponse.json({ error: "Non authentifié" }, { status: 401 })
+    if (!session || !session.user) {
+      return NextResponse.json({ error: "Non autorisé" }, { status: 401 })
     }
 
-    const { reservationId, type, description } = await request.json()
+    const data = await request.json()
 
-    // Vérifier si tous les champs requis sont fournis
-    if (!reservationId || !type || !description) {
-      return NextResponse.json({ error: "Tous les champs requis doivent être remplis" }, { status: 400 })
+    if (!data.reservationId || !data.type || !data.description) {
+      return NextResponse.json({ error: "Données manquantes" }, { status: 400 })
     }
 
-    // Vérifier si la réservation existe et appartient à l'utilisateur
-    const reservationResult = await executeRawQuery(
-      `
-      SELECT * FROM reservations WHERE id = $1 LIMIT 1
-    `,
-      [reservationId],
-    )
+    const incident = await createIncident({
+      reservationId: data.reservationId,
+      type: data.type,
+      description: data.description,
+      userId: session.user.id,
+    })
 
-    if (reservationResult.length === 0) {
-      return NextResponse.json({ error: "Réservation non trouvée" }, { status: 404 })
-    }
-
-    const reservation = reservationResult[0]
-
-    // Vérifier que l'utilisateur a le droit de signaler un incident sur cette réservation
-    if (user.role !== "ADMIN" && user.role !== "MANAGER" && reservation.user_id !== user.id) {
-      return NextResponse.json({ error: "Accès non autorisé" }, { status: 403 })
-    }
-
-    // Créer l'incident
-    const result = await executeRawQuery(
-      `
-      INSERT INTO incidents (reservation_id, type, description, status)
-      VALUES ($1, $2, $3, $4)
-      RETURNING *
-    `,
-      [reservationId, type, description, "REPORTED"],
-    )
-
-    const newIncident = result[0]
-
-    return NextResponse.json(newIncident)
-  } catch (error) {
-    console.error("Erreur lors de la création de l'incident:", error)
-    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 })
+    return NextResponse.json(incident)
+  } catch (error: any) {
+    console.error("POST /api/incidents - Erreur:", error)
+    return NextResponse.json({ error: error.message || "Erreur serveur" }, { status: 500 })
   }
 }

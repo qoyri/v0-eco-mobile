@@ -50,7 +50,7 @@ export function verifyToken(token: string): UserSession | null {
 // Obtenir l'utilisateur actuel à partir du cookie
 export async function getCurrentUser(): Promise<UserSession | null> {
   const cookieStore = cookies()
-  const token = cookieStore.get("auth-token")?.value
+  const token = (await cookieStore).get("auth-token")?.value
 
   if (!token) {
     return null

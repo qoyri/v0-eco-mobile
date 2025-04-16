@@ -3,8 +3,8 @@ import { cookies } from "next/headers"
 import { executeRawQuery } from "@/lib/db"
 import { createToken, hashPassword } from "@/lib/auth"
 
-// Ajouter cette ligne pour le mode d'exportation statique
-export const dynamic = "force-static"
+// Changer de force-static à force-dynamic
+export const dynamic = "force-dynamic"
 
 export async function POST(request: NextRequest) {
   try {
