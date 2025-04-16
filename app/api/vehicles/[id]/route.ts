@@ -5,6 +5,12 @@ import * as vehicleService from "@/lib/services/vehicle-service"
 // Ajouter cette ligne pour le mode d'exportation statique
 export const dynamic = "force-static"
 
+// Ajouter cette fonction pour générer les paramètres statiques
+export async function generateStaticParams() {
+  // Pour une application de démonstration, nous pouvons retourner des IDs fictifs
+  return [{ id: "vehicle-1" }, { id: "vehicle-2" }, { id: "vehicle-3" }]
+}
+
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const id = params.id

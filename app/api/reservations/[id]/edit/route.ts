@@ -5,6 +5,12 @@ import { getCurrentUser } from "@/lib/auth"
 // Ajouter cette ligne pour le mode d'exportation statique
 export const dynamic = "force-static"
 
+// Ajouter cette fonction pour générer les paramètres statiques
+export async function generateStaticParams() {
+  // Pour une application de démonstration, nous pouvons retourner des IDs fictifs
+  return [{ id: "reservation-1" }, { id: "reservation-2" }, { id: "reservation-3" }]
+}
+
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const user = await getCurrentUser()

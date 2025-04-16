@@ -5,6 +5,12 @@ import * as agencyService from "@/lib/services/agency-service"
 // Ajouter cette ligne pour le mode d'exportation statique
 export const dynamic = "force-static"
 
+// Ajouter cette fonction pour générer les paramètres statiques
+export async function generateStaticParams() {
+  // Pour une application de démonstration, nous pouvons retourner des IDs fictifs
+  return [{ id: "agency-1" }, { id: "agency-2" }, { id: "agency-3" }]
+}
+
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const id = params.id

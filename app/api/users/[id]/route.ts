@@ -5,6 +5,12 @@ import * as userService from "@/lib/services/user-service"
 // Ajouter cette ligne pour le mode d'exportation statique
 export const dynamic = "force-static"
 
+// Ajouter cette fonction pour générer les paramètres statiques
+export async function generateStaticParams() {
+  // Pour une application de démonstration, nous pouvons retourner des IDs fictifs
+  return [{ id: "user-1" }, { id: "user-2" }, { id: "user-3" }]
+}
+
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const currentUser = await getCurrentUser()
