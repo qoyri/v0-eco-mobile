@@ -1,7 +1,5 @@
 # Eco-Mobil - Plateforme de Location de Véhicules Électriques
 
-![Eco-Mobil Logo](/public/icon.svg)
-
 ## Vue d'ensemble
 
 Eco-Mobil est une application web moderne pour la gestion et la location de véhicules électriques (vélos, trottinettes, hoverboards). Cette plateforme permet aux utilisateurs de réserver des véhicules électriques dans différentes agences, de gérer leurs réservations et de signaler des incidents.
