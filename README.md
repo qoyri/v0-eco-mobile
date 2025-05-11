@@ -115,7 +115,7 @@ L'application suit une architecture moderne basée sur Next.js App Router:
 
 ## Structure du projet
 
-\`\`\`
+```
 eco-mobil/
 ├── app/                    # Dossier principal de l'App Router
 │   ├── api/                # API Routes
@@ -143,8 +143,7 @@ eco-mobil/
 │   ├── models/             # Modèles de données
 │   └── dtos/               # Objets de transfert de données
 └── ...                     # Autres fichiers de configuration
-\`\`\`
-
+```
 ## API
 
 L'API est organisée en plusieurs sections:
@@ -199,7 +198,7 @@ L'API est organisée en plusieurs sections:
 ## Modèles de données
 
 ### User
-\`\`\`typescript
+```typescript
 interface User {
   id: string;
   email: string;
@@ -210,10 +209,10 @@ interface User {
   address?: string;
   createdAt: Date;
 }
-\`\`\`
+```
 
 ### Agency
-\`\`\`typescript
+```typescript
 interface Agency {
   id: string;
   name: string;
@@ -224,10 +223,10 @@ interface Agency {
   openingHours: string;
   isActive: boolean;
 }
-\`\`\`
+```
 
 ### Vehicle
-\`\`\`typescript
+```typescript
 interface Vehicle {
   id: string;
   type: "BIKE" | "SCOOTER" | "HOVERBOARD";
@@ -240,10 +239,10 @@ interface Vehicle {
   maintenanceCount: number;
   lastMaintenanceDate?: Date;
 }
-\`\`\`
+```
 
 ### Reservation
-\`\`\`typescript
+```typescript
 interface Reservation {
   id: string;
   reservationNumber: string;
@@ -259,10 +258,10 @@ interface Reservation {
   createdAt: Date;
   updatedAt: Date;
 }
-\`\`\`
+```
 
 ### Incident
-\`\`\`typescript
+```typescript
 interface Incident {
   id: string;
   reservationId: string;
@@ -272,7 +271,7 @@ interface Incident {
   status: "REPORTED" | "IN_PROGRESS" | "RESOLVED";
   resolvedAt?: Date;
 }
-\`\`\`
+```
 
 ## Authentification
 
