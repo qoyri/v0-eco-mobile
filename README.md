@@ -76,39 +76,39 @@ L'application suit une architecture moderne basée sur Next.js App Router:
 ### Étapes d'installation
 
 1. Cloner le dépôt
-   \`\`\`bash
+   ```bash
    git clone https://github.com/qoyri/v0-eco-mobile.git
    cd eco-mobil
-   \`\`\`
+   ```
 
 2. Installer les dépendances
-   \`\`\`bash
+  ```bash
    npm install
    # ou
    yarn install
-   \`\`\`
+   ```
 
 3. Configurer les variables d'environnement
    Créez un fichier `.env.local` à la racine du projet avec les variables suivantes:
-   \`\`\`
+   ```
    DATABASE_URL=postgresql://user:password@host:port/database
    JWT_SECRET=votre_secret_jwt_très_sécurisé
    NEXT_PUBLIC_API_URL=http://localhost:3000
-   \`\`\`
+   ```
 
 4. Initialiser la base de données
-   \`\`\`bash
+   ```bash
    npm run db:push
    # ou
    yarn db:push
-   \`\`\`
+   ```
 
 5. Lancer le serveur de développement
-   \`\`\`bash
+   ```bash
    npm run dev
    # ou
    yarn dev
-   \`\`\`
+   ```
 
 6. Accéder à l'application
    Ouvrez votre navigateur à l'adresse [http://localhost:3000](http://localhost:3000)
